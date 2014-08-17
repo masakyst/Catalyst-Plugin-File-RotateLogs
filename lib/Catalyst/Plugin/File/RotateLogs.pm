@@ -1,7 +1,7 @@
 package Catalyst::Plugin::File::RotateLogs;
 use strict;
 use warnings;
-use Data::Dumper;
+#use Data::Dumper;
 
 our $VERSION = "0.01";
 
@@ -20,32 +20,23 @@ sub setup {
 
 package Catalyst::Plugin::File::RotateLogs::Backend;
 use Moose;
-#use Moose::Util 'find_meta';
 use Cwd;
 use Time::Piece;
 use File::RotateLogs;
-use Data::Dumper;
+#use Data::Dumper;
 
 BEGIN { extends 'Catalyst::Log' }
 
-#has _rotatelogs => (is => 'rw');
 
 my $ROTATE_LOGS; #attributeだと無駄なmethod call増えるのでこの方がいい？
 my $CALLER_DEPTH = 1; 
 my $appdir = getcwd;
 
 
-my $rotate_errorlog = File::RotateLogs->new(
-    logfile  => "${appdir}/logs/error_log.%Y%m%d%H",
-    linkname => "${appdir}/logs/error_log",
-    rotationtime => 86400, #default 1day
-    maxage => 86400 * 3, #3day
-);
-
 sub new {
     my $class = shift;
     my $args  = shift;
-    print Dumper($args);
+    #print Dumper($args);
     my $self  = $class->next::method();
     $ROTATE_LOGS = File::RotateLogs->new(
         logfile  => "${appdir}/logs/error_log.%Y%m%d%H",
@@ -54,19 +45,10 @@ sub new {
         maxage => 86400 * 3,   #3day
     );
 
-    #$self->_rotatelogs(
-    #    File::RotateLogs->new(
-    #        logfile  => "${appdir}/logs/error_log.%Y%m%d%H",
-    #        linkname => "${appdir}/logs/error_log",
-    #        rotationtime => 86400, #default 1day
-    #        maxage => 86400 * 3, #3day
-    #    )
-    #);
     return $self;
 }
 
 {
-    #my $meta = find_meta(__PACKAGE__);
     foreach my $handler (qw/debug info warn error fatal/) {
         override $handler => sub {
             my ($self, $message) = @_; 
