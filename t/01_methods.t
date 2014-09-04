@@ -1,18 +1,29 @@
 use strict;
 use warnings;
 use Test::More 0.98;
+use File::Path;
 
 {
-    package Catalyst::Plugin::File::RotateLogs::Test;
-    use base qw(Catalyst::Plugin::File::RotateLogs Class::Accessor::Fast);
-
-    __PACKAGE__->mk_accessors(qw(log config));
-
+    package TestApp;
+    use strict;
+    use warnings;
+    use Catalyst qw/File::RotateLogs/;
+    __PACKAGE__->config(
+        home => './t',
+    );
+    __PACKAGE__->setup();
 }
+use Catalyst::Test 'TestApp';
+mkdir 't/logs';
 
-my $c = Catalyst::Plugin::File::RotateLogs::Test->new();
+my($res, $c) = ctx_request('/');
 
-ok 1, 1;
+isa_ok($c->log, 'Catalyst::Plugin::File::RotateLogs::Backend');
+can_ok($c->log, 'debug');
+can_ok($c->log, 'info');
+can_ok($c->log, 'warn');
+can_ok($c->log, 'fatal');
 
+File::Path::rmtree(['t/logs']);
 
 done_testing;

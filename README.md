@@ -22,16 +22,14 @@ Catalyst::Plugin::File::RotateLogs - Catalyst Plugin for File::RotateLogs
         rotationtime: 86400
         maxage: 86400 * 3  
 
-
 # DESCRIPTION
 
 This module allows you to initialize File::RotateLogs within the application's configuration. File::RotateLogs is utility for file logger and very simple logfile rotation.
 
 # SEE ALSO
 
-Catalyst::Logs
-
-File::RotateLogs
+- [Catalyst::Log](https://metacpan.org/pod/Catalyst::Log)
+- [File::RotateLogs](https://metacpan.org/pod/File::RotateLogs)
 
 # LICENSE
 

@@ -2,7 +2,6 @@ package Catalyst::Plugin::File::RotateLogs;
 use strict;
 use warnings;
 use MRO::Compat;
-
 our $VERSION = "0.01";
 
 sub setup {
