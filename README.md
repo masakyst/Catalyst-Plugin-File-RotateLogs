@@ -6,7 +6,6 @@ Catalyst::Plugin::File::RotateLogs - Catalyst Plugin for File::RotateLogs
 
     # plugin is loaded
     use Catalyst qw/ 
-        -Debug
         ConfigLoader
         Static::Simple
         File::RotateLogs
