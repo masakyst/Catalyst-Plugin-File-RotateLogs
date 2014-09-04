@@ -1,49 +1,39 @@
 package Catalyst::Plugin::File::RotateLogs;
 use strict;
 use warnings;
-#use Data::Dumper;
+use MRO::Compat;
 
 our $VERSION = "0.01";
 
-use MRO::Compat;
-
 sub setup {
     my $c = shift;
-    # catalyst app home dir
-    #print "context: ".Dumper($c->config->{home});
-
-    my $config = $c->config->{'File::RotateLogs'} || {};
-    #print Dumper($config);
+    my $home = $c->config->{home};
+    my $config = $c->config->{'File::RotateLogs'} || {
+        logfile  => "${home}/logs/error_log.%Y%m%d%H",
+        linkname => "${home}/logs/error_log",
+        rotationtime => 86400, #default 1day
+        maxage => 86400 * 3,   #3day
+    };
     $c->log((__PACKAGE__ . '::Backend')->new($config));
     return $c->maybe::next::method(@_);
 }
 
 package Catalyst::Plugin::File::RotateLogs::Backend;
 use Moose;
-use Cwd;
 use Time::Piece;
 use File::RotateLogs;
-#use Data::Dumper;
 
 BEGIN { extends 'Catalyst::Log' }
 
-
-my $ROTATE_LOGS; #attributeだと無駄なmethod call増えるのでこの方がいい？
+my $ROTATE_LOGS; 
 my $CALLER_DEPTH = 1; 
-my $appdir = getcwd;
-
 
 sub new {
     my $class = shift;
     my $args  = shift;
-    #print Dumper($args);
+
     my $self  = $class->next::method();
-    $ROTATE_LOGS = File::RotateLogs->new(
-        logfile  => "${appdir}/logs/error_log.%Y%m%d%H",
-        linkname => "${appdir}/logs/error_log",
-        rotationtime => 86400, #default 1day
-        maxage => 86400 * 3,   #3day
-    );
+    $ROTATE_LOGS = File::RotateLogs->new($args);
 
     return $self;
 }
@@ -71,15 +61,39 @@ Catalyst::Plugin::File::RotateLogs - Catalyst Plugin for File::RotateLogs
 
 =head1 SYNOPSIS
 
-    use Catalyst::Plugin::File::RotateLogs;
+    # plugin is loaded
+    use Catalyst qw/ 
+        -Debug
+        ConfigLoader
+        Static::Simple
+        File::RotateLogs
+    /;
+
+    $c->log->info("hello catalyst"); 
+
+    # Catalyst configuration by default (e. g. in YAML format):
+    # please 'mkdir logs'
+    File::RotateLogs:
+        logfile: './logs/error.log.%Y%m%d%H' 
+        linkname: './logs/error.log'
+        rotationtime: 86400
+        maxage: 86400 * 3  
 
 =head1 DESCRIPTION
 
-Catalyst::Plugin::File::RotateLogs is ...
+This module allows you to initialize File::RotateLogs within the application's configuration. File::RotateLogs is utility for file logger and very simple logfile rotation.
+
+=head1 SEE ALSO
+
+=over 2
+
+=item L<Catalyst::Log>
+
+=item L<File::RotateLogs>
+
+=back
 
 =head1 LICENSE
-
-Copyright (C) masakyst.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

@@ -4,15 +4,36 @@ Catalyst::Plugin::File::RotateLogs - Catalyst Plugin for File::RotateLogs
 
 # SYNOPSIS
 
-    use Catalyst::Plugin::File::RotateLogs;
+    # plugin is loaded
+    use Catalyst qw/ 
+        -Debug
+        ConfigLoader
+        Static::Simple
+        File::RotateLogs
+    /;
+
+    $c->log->info("hello catalyst"); 
+
+    # Catalyst configuration by default (e. g. in YAML format):
+    # please 'mkdir logs'
+    File::RotateLogs:
+        logfile: './logs/error.log.%Y%m%d%H' 
+        linkname: './logs/error.log'
+        rotationtime: 86400
+        maxage: 86400 * 3  
+
 
 # DESCRIPTION
 
-Catalyst::Plugin::File::RotateLogs is ...
+This module allows you to initialize File::RotateLogs within the application's configuration. File::RotateLogs is utility for file logger and very simple logfile rotation.
+
+# SEE ALSO
+
+Catalyst::Logs
+
+File::RotateLogs
 
 # LICENSE
-
-Copyright (C) masakyst.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
