@@ -23,7 +23,7 @@ Catalyst::Plugin::File::RotateLogs - Catalyst Plugin for File::RotateLogs
 
 # DESCRIPTION
 
-This module allows you to initialize File::RotateLogs within the application's configuration. File::RotateLogs is utility for file logger and very simple logfile rotation. I wanted easier log rotation.
+This module allows you to initialize File::RotateLogs within the application's configuration. File::RotateLogs is utility for file logger and very simple logfile rotation. I wanted easier catalyst log rotation.
 
 # SEE ALSO
 
