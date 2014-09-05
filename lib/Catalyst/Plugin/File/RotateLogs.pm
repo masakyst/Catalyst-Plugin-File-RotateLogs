@@ -24,6 +24,7 @@ use File::RotateLogs;
 
 BEGIN { extends 'Catalyst::Log' }
 
+my $AUTODUMP = 1; # Data::Dumper( todo: How does it set up? 
 my $ROTATE_LOGS; 
 my $CALLER_DEPTH = 1; 
 
@@ -41,6 +42,12 @@ sub new {
     foreach my $handler (qw/debug info warn error fatal/) {
         override $handler => sub {
             my ($self, $message) = @_; 
+            if ($AUTODUMP && defined $message && ref($message) ) {
+                local $Data::Dumper::Terse = 1;
+                local $Data::Dumper::Indent = 1;
+                local $Data::Dumper::Sortkeys = 1;
+                $message = Data::Dumper::Dumper($message);
+            }
             my ($package, $file, $line) = caller($CALLER_DEPTH); 
             #todo: enables to change a format
             $ROTATE_LOGS->print(sprintf(qq{%s: [%s] [%s] "%s at %s line %s"\n},
