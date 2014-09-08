@@ -43,7 +43,7 @@ sub new {
             my ($self, $message) = @_; 
             my ($package, $file, $line) = caller($CALLER_DEPTH); 
             #todo: enables to change a format
-            $ROTATE_LOGS->print(sprintf(qq{%s: [%s] [%s] "%s at %s line %s"\n},
+            $ROTATE_LOGS->print(sprintf(qq{%s: [%s] [%s] %s at %s line %s\n},
                     localtime->datetime, uc $handler, $package, $message, $file, $line));
         };
 
