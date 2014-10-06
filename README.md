@@ -14,10 +14,9 @@ Catalyst::Plugin::File::RotateLogs - Catalyst Plugin for File::RotateLogs
     $c->log->info("hello catalyst"); 
 
     # Catalyst configuration by default (e. g. in YAML format):
-    # please 'mkdir logs'
     File::RotateLogs:
-        logfile: './logs/error.log.%Y%m%d%H' 
-        linkname: './logs/error.log'
+        logfile: './root/error.log.%Y%m%d%H' 
+        linkname: './root/error.log'
         rotationtime: 86400
         maxage: 86400 * 3  
 
