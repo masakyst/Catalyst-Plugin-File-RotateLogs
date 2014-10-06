@@ -65,7 +65,7 @@
          "web" : "https://github.com/masakyst/Catalyst-Plugin-File-RotateLogs"
       }
    },
-   "version" : "0.01",
+   "version" : "0.02",
    "x_contributors" : [
       "masakyst <masakyst.mobile@gmail.com>"
    ]
