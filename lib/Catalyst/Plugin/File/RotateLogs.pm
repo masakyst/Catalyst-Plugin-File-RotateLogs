@@ -2,7 +2,7 @@ package Catalyst::Plugin::File::RotateLogs;
 use strict;
 use warnings;
 use MRO::Compat;
-our $VERSION = "0.03";
+our $VERSION = "0.04";
 
 sub setup {
     my $c = shift;
@@ -84,8 +84,8 @@ Catalyst::Plugin::File::RotateLogs - Catalyst Plugin for File::RotateLogs
 
     # Catalyst configuration by default (e. g. in YAML format):
     File::RotateLogs:
-        logfile: './root/error.log.%Y%m%d%H' 
-        linkname: './root/error.log'
+        logfile: '/[absolute path]/root/error.log.%Y%m%d%H' 
+        linkname: '/[absolute path]/root/error.log'
         rotationtime: 86400
         maxage: 86400 * 3  
 
