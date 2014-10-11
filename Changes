@@ -2,6 +2,8 @@ Revision history for Perl extension Catalyst-Plugin-File-RotateLogs
 
 {{$NEXT}}
 
+0.04 2014-10-11T08:14:32Z
+
     - fix documentation for Catalyst configuration
 
 0.03 2014-10-11T08:08:09Z
