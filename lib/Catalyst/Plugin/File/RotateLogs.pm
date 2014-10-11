@@ -8,11 +8,13 @@ sub setup {
     my $c = shift;
     my $home = $c->config->{home};
     my $config = $c->config->{'File::RotateLogs'} || {
-        logfile  => "${home}/logs/error_log.%Y%m%d%H",
-        linkname => "${home}/logs/error_log",
+        logfile  => "${home}/root/error_log.%Y%m%d%H",
+        linkname => "${home}/root/error_log",
         rotationtime => 86400, #default 1day
         maxage => 86400 * 3,   #3day
+        autodump => 0,
     };
+    $config->{maxage} = int eval($config->{maxage});
     $c->log((__PACKAGE__ . '::Backend')->new($config));
     return $c->maybe::next::method(@_);
 }
@@ -24,16 +26,19 @@ use File::RotateLogs;
 
 BEGIN { extends 'Catalyst::Log' }
 
-my $AUTODUMP = 1; # Data::Dumper( todo: How does it set up? 
 my $ROTATE_LOGS; 
 my $CALLER_DEPTH = 1; 
+my $AUTODUMP     = 0;
 
 sub new {
     my $class = shift;
-    my $args  = shift;
+    my $config  = shift;
+
+    $AUTODUMP = $config->{autodump} //= 0;
+    delete $config->{autodump};
 
     my $self  = $class->next::method();
-    $ROTATE_LOGS = File::RotateLogs->new($args);
+    $ROTATE_LOGS = File::RotateLogs->new($config);
 
     return $self;
 }
@@ -42,9 +47,9 @@ sub new {
     foreach my $handler (qw/debug info warn error fatal/) {
         override $handler => sub {
             my ($self, $message) = @_; 
-            if ($AUTODUMP && defined $message && ref($message) ) {
+            if ($AUTODUMP && ref($message) ) {
                 local $Data::Dumper::Terse = 1;
-                local $Data::Dumper::Indent = 1;
+                local $Data::Dumper::Indent = 0;
                 local $Data::Dumper::Sortkeys = 1;
                 $message = Data::Dumper::Dumper($message);
             }

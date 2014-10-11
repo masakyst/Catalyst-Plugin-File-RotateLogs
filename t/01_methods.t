@@ -14,7 +14,7 @@ use File::Path;
     __PACKAGE__->setup();
 }
 use Catalyst::Test 'TestApp';
-mkdir 't/logs';
+mkdir 't/root';
 
 my($res, $c) = ctx_request('/');
 
@@ -24,6 +24,6 @@ can_ok($c->log, 'info');
 can_ok($c->log, 'warn');
 can_ok($c->log, 'fatal');
 
-File::Path::rmtree(['t/logs']);
+File::Path::rmtree(['t/root']);
 
 done_testing;
