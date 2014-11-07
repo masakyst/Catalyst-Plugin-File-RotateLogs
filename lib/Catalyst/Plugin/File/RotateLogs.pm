@@ -65,7 +65,7 @@ sub new {
 1;
 __END__
 
-=encoding utf-8
+=pod
 
 =head1 NAME
 
@@ -87,7 +87,8 @@ Catalyst::Plugin::File::RotateLogs - Catalyst Plugin for File::RotateLogs
         logfile: '/[absolute path]/root/error.log.%Y%m%d%H' 
         linkname: '/[absolute path]/root/error.log'
         rotationtime: 86400
-        maxage: 86400 * 3  
+        maxage: 86400 * 3
+        autodump: 0
 
 =head1 DESCRIPTION
 
@@ -113,4 +114,3 @@ it under the same terms as Perl itself.
 masakyst E<lt>masakyst.public@gmail.comE<gt>
 
 =cut
-

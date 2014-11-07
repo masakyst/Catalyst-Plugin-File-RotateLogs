@@ -18,7 +18,8 @@ Catalyst::Plugin::File::RotateLogs - Catalyst Plugin for File::RotateLogs
         logfile: '/[absolute path]/root/error.log.%Y%m%d%H' 
         linkname: '/[absolute path]/root/error.log'
         rotationtime: 86400
-        maxage: 86400 * 3  
+        maxage: 86400 * 3
+        autodump: 0
 
 # DESCRIPTION
 
