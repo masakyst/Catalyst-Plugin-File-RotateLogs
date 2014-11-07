@@ -2,7 +2,7 @@ package Catalyst::Plugin::File::RotateLogs;
 use strict;
 use warnings;
 use MRO::Compat;
-our $VERSION = "0.04";
+our $VERSION = "0.05";
 
 sub setup {
     my $c = shift;
