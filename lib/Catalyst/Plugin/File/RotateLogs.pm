@@ -2,17 +2,18 @@ package Catalyst::Plugin::File::RotateLogs;
 use strict;
 use warnings;
 use MRO::Compat;
-our $VERSION = "0.05";
+use Path::Class qw//;
+our $VERSION = "0.06-TRIAL";
 
 sub setup {
     my $c = shift;
     my $home = $c->config->{home};
     my $config = $c->config->{'File::RotateLogs'} || {
-        logfile  => "${home}/root/error_log.%Y%m%d%H",
-        linkname => "${home}/root/error_log",
+        logfile      => Path::Class::file($home, "root", "error_log.%Y%m%d%H")->absolute->stringify,
+        linkname     => Path::Class::file($home, "root", "error_log")->absolute->stringify,
         rotationtime => 86400, #default 1day
-        maxage => 86400 * 3,   #3day
-        autodump => 0,
+        maxage       => 86400 * 3,   #3day
+        autodump     => 0,
     };
     $config->{maxage} = int eval($config->{maxage});
     $c->log((__PACKAGE__ . '::Backend')->new($config));
