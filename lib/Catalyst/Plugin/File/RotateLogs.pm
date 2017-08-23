@@ -14,6 +14,7 @@ sub setup {
         rotationtime => 86400, #default 1day
         maxage       => 86400 * 3,   #3day
         autodump     => 0,
+        stdout       => 0,
     };
     $config->{maxage} = int eval($config->{maxage});
     $c->log((__PACKAGE__ . '::Backend')->new($config));
@@ -30,16 +31,21 @@ BEGIN { extends 'Catalyst::Log' }
 my $ROTATE_LOGS; 
 my $CALLER_DEPTH = 1; 
 my $AUTODUMP     = 0;
+my $STDOUT       = 0;
 
 sub new {
     my $class = shift;
     my $config  = shift;
 
     $AUTODUMP = $config->{autodump} //= 0;
+    $STDOUT   = $config->{stdout} //= 0;
     delete $config->{autodump};
+    delete $config->{stdout};
+
+    print "STDOUT: ".$STDOUT, "\n";
 
     my $self  = $class->next::method();
-    $ROTATE_LOGS = File::RotateLogs->new($config);
+    $ROTATE_LOGS = File::RotateLogs->new($config) unless $STDOUT;
 
     return $self;
 }
@@ -55,9 +61,15 @@ sub new {
                 $message = Data::Dumper::Dumper($message);
             }
             my ($package, $file, $line) = caller($CALLER_DEPTH); 
-            #todo: enables to change a format
-            $ROTATE_LOGS->print(sprintf(qq{%s: [%s] [%s] %s at %s line %s\n},
-                    localtime->datetime, uc $handler, $package, $message, $file, $line));
+            
+            if ($STDOUT) {
+                print sprintf(qq{%s: [%s] [%s] %s at %s line %s\n},
+                        localtime->datetime, uc $handler, $package, $message, $file, $line);
+            }
+            else {
+               $ROTATE_LOGS->print(sprintf(qq{%s: [%s] [%s] %s at %s line %s\n},
+                        localtime->datetime, uc $handler, $package, $message, $file, $line));
+            }
         };
 
     }
