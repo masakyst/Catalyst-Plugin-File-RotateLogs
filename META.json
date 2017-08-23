@@ -44,6 +44,7 @@
          "requires" : {
             "Catalyst::Runtime" : "5.90000",
             "File::RotateLogs" : "0.07",
+            "Path::Class" : "0",
             "perl" : "5.010_001"
          }
       },
@@ -67,7 +68,7 @@
    },
    "version" : "0.06",
    "x_contributors" : [
-      "masakyst <masakyst.mobile@gmail.com>"
+      "Masaaki Saito <masakyst.mobile@gmail.com>"
    ],
    "x_serialization_backend" : "JSON::PP version 2.27400"
 }
