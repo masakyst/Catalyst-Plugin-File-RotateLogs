@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use MRO::Compat;
 use Path::Class qw//;
-our $VERSION = "0.06-TRIAL";
+our $VERSION = "0.06";
 
 sub setup {
     my $c = shift;
@@ -14,7 +14,7 @@ sub setup {
         rotationtime => 86400, #default 1day
         maxage       => 86400 * 3,   #3day
         autodump     => 0,
-        stdout       => 0,
+        stdout       => 1,
     };
     $config->{maxage} = int eval($config->{maxage});
     $c->log((__PACKAGE__ . '::Backend')->new($config));
