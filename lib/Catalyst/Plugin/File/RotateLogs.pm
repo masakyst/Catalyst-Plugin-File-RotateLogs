@@ -2,7 +2,7 @@ package Catalyst::Plugin::File::RotateLogs;
 use strict;
 use warnings;
 use MRO::Compat;
-use Path::Class qw//;
+use Path::Class ();
 
 our $VERSION = "0.06";
 
@@ -15,7 +15,7 @@ sub setup {
         rotationtime => 86400, #default 1day
         maxage       => 86400 * 3,   #3day
         autodump     => 0,
-        stdout       => 1,
+        color        => 1,
     };
     $config->{maxage} = int eval($config->{maxage});
     $c->log((__PACKAGE__ . '::Backend')->new($config));
@@ -33,21 +33,19 @@ BEGIN { extends 'Catalyst::Log' }
 my $ROTATE_LOGS; 
 my $CALLER_DEPTH = 1; 
 my $AUTODUMP     = 0;
-my $STDOUT       = 0;
+my $COLOR        = 0;
 
 sub new {
     my $class = shift;
     my $config  = shift;
 
     $AUTODUMP = $config->{autodump} //= 0;
-    $STDOUT   = $config->{stdout} //= 0;
+    $COLOR    = $config->{color} //= 0;
     delete $config->{autodump};
-    delete $config->{stdout};
-
-    print "STDOUT: ".$STDOUT, "\n";
+    delete $config->{color};
 
     my $self  = $class->next::method();
-    $ROTATE_LOGS = File::RotateLogs->new($config) unless $STDOUT;
+    $ROTATE_LOGS = File::RotateLogs->new($config);
 
     return $self;
 }
@@ -62,22 +60,24 @@ sub new {
                 local $Data::Dumper::Sortkeys = 1;
                 $message = Data::Dumper::Dumper($message);
             }
+
             my ($package, $file, $line) = caller($CALLER_DEPTH); 
+ 
+            my $datetime   = localtime->datetime;
+            my $uc_handler = uc $handler;
+
+            if ($COLOR) {
+                $datetime   = colored(['yellow on_magenta'],    $datetime), 
+                $uc_handler = colored(['red on_bright_yellow'], $uc_handler), 
+                $package    = colored(['bright_red on_black'], $package), 
+                $message    = colored(['bold blue'],           $message), 
+                #    $file, 
+                $line       = colored(['white on_black'], $line)
+            }
             
-            if ($STDOUT) {
-                print sprintf(qq{%s: [%s] [%s] %s at %s line %s\n},
-                    colored(['yellow on_magenta'],    localtime->datetime), 
-                    colored(['red on_bright_yellow'], uc($handler)), 
-                    colored(['bright_red on_black'], $package), 
-                    colored(['bold blue'], $message), 
-                    $file, 
-                    colored(['white on_black'], $line)
-                );
-            }
-            else {
-               $ROTATE_LOGS->print(sprintf(qq{%s: [%s] [%s] %s at %s line %s\n},
-                        localtime->datetime, uc $handler, $package, $message, $file, $line));
-            }
+            $ROTATE_LOGS->print(sprintf(qq{%s: [%s] [%s] %s at %s line %s\n},
+                    $datetime, $uc_handler, $package, $message, $file, $line
+            ));
         };
 
     }
