@@ -3,6 +3,7 @@ use strict;
 use warnings;
 use MRO::Compat;
 use Path::Class qw//;
+
 our $VERSION = "0.06";
 
 sub setup {
@@ -25,6 +26,7 @@ package Catalyst::Plugin::File::RotateLogs::Backend;
 use Moose;
 use Time::Piece;
 use File::RotateLogs;
+use Term::ANSIColor;
 
 BEGIN { extends 'Catalyst::Log' }
 
@@ -64,7 +66,13 @@ sub new {
             
             if ($STDOUT) {
                 print sprintf(qq{%s: [%s] [%s] %s at %s line %s\n},
-                        localtime->datetime, uc $handler, $package, $message, $file, $line);
+                    colored(['yellow on_magenta'],    localtime->datetime), 
+                    colored(['red on_bright_yellow'], uc($handler)), 
+                    colored(['bright_red on_black'], $package), 
+                    colored(['bold blue'], $message), 
+                    $file, 
+                    colored(['white on_black'], $line)
+                );
             }
             else {
                $ROTATE_LOGS->print(sprintf(qq{%s: [%s] [%s] %s at %s line %s\n},
