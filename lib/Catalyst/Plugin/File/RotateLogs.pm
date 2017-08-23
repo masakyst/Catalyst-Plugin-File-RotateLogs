@@ -3,7 +3,8 @@ use strict;
 use warnings;
 use MRO::Compat;
 use Path::Class qw//;
-our $VERSION = "0.06-TRIAL";
+our $VERSION = "0.06";
+use Data::Dumper;
 
 sub setup {
     my $c = shift;
@@ -16,6 +17,7 @@ sub setup {
         autodump     => 0,
     };
     $config->{maxage} = int eval($config->{maxage});
+    print Dumper($config);
     $c->log((__PACKAGE__ . '::Backend')->new($config));
     return $c->maybe::next::method(@_);
 }
