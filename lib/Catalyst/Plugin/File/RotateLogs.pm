@@ -19,7 +19,6 @@ sub setup {
         color        => 0,
     };
     $config->{maxage} = int eval($config->{maxage});
-    print Dumper($config);
     $c->log((__PACKAGE__ . '::Backend')->new($config));
     return $c->maybe::next::method(@_);
 }
