@@ -16,7 +16,7 @@ sub setup {
         rotationtime => 86400,     #default 1day
         maxage       => 86400 * 3, #3day
         autodump     => 0,
-        color        => 1,
+        color        => 0,
     };
     $config->{maxage} = int eval($config->{maxage});
     $c->log((__PACKAGE__ . '::Backend')->new($config));
