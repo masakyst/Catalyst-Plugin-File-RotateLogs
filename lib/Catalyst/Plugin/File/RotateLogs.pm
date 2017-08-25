@@ -1,4 +1,5 @@
 package Catalyst::Plugin::File::RotateLogs;
+use feature qw(switch);
 use strict;
 use warnings;
 use MRO::Compat;
@@ -12,8 +13,8 @@ sub setup {
     my $config = $c->config->{'File::RotateLogs'} || {
         logfile      => Path::Class::file($home, "root", "error_log.%Y%m%d%H")->absolute->stringify,
         linkname     => Path::Class::file($home, "root", "error_log")->absolute->stringify,
-        rotationtime => 86400, #default 1day
-        maxage       => 86400 * 3,   #3day
+        rotationtime => 86400,     #default 1day
+        maxage       => 86400 * 3, #3day
         autodump     => 0,
         color        => 1,
     };
@@ -40,7 +41,7 @@ sub new {
     my $config  = shift;
 
     $AUTODUMP = $config->{autodump} //= 0;
-    $COLOR    = $config->{color} //= 0;
+    $COLOR    = $config->{color}    //= 0;
     delete $config->{autodump};
     delete $config->{color};
 
@@ -67,15 +68,22 @@ sub new {
             my $uc_handler = uc $handler;
 
             if ($COLOR) {
-                $datetime   = colored(['yellow on_magenta'],    $datetime), 
-                $uc_handler = colored(['red on_bright_yellow'], $uc_handler), 
-                $package    = colored(['bright_red on_black'], $package), 
-                $message    = colored(['bold blue'],           $message), 
-                #    $file, 
-                $line       = colored(['white on_black'], $line)
+                my $level_color;
+                given ($uc_handler) {
+                    when (/DEBUG/) { $level_color = 'magenta'}
+                    when (/INFO/)  { $level_color = 'cyan'   }
+                    when (/WARN/)  { $level_color = 'yellow' }
+                    default        { $level_color = 'red'    }
+                }
+                $datetime   = colored(['clear yellow'],       $datetime), 
+                $uc_handler = colored(["clear $level_color"], $uc_handler), 
+                $package    = colored(['clear white'],        $package), 
+                $message    = colored(['clear green'],        $message), 
+                $file       = colored(['dark white'],         $file), 
+                $line       = colored(['dark white'],         $line)
             }
             
-            $ROTATE_LOGS->print(sprintf(qq{%s: [%s] [%s] %s at %s line %s\n},
+            $ROTATE_LOGS->print(sprintf(qq{%s: [%s] [%s] %s %s %s\n},
                     $datetime, $uc_handler, $package, $message, $file, $line
             ));
         };
@@ -110,6 +118,7 @@ Catalyst::Plugin::File::RotateLogs - Catalyst Plugin for File::RotateLogs
         rotationtime: 86400
         maxage: 86400 * 3
         autodump: 0
+        color: 0
 
 =head1 DESCRIPTION
 
