@@ -20,6 +20,7 @@ Catalyst::Plugin::File::RotateLogs - Catalyst Plugin for File::RotateLogs
         rotationtime: 86400
         maxage: 86400 * 3
         autodump: 0
+        color: 0
 
 # DESCRIPTION
 
