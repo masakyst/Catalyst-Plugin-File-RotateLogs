@@ -1,7 +1,8 @@
 Revision history for Perl extension Catalyst-Plugin-File-RotateLogs
 
 {{$NEXT}}
-    
+
+0.06 2017-09-15T03:30:18Z
     - Print colored debug messages to the output when PLACK_ENV development.
     - Fixed bugs
     - Fixed documentation
