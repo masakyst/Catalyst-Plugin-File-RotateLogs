@@ -9,14 +9,21 @@ our $VERSION = "0.06";
 
 sub setup {
     my $c = shift;
+    my $mode_prefix = $ENV{PLACK_ENV} || 'development';
+    my $default_autodump = 0;
+    my $default_color    = 0;
+    if ($mode_prefix eq 'development') {
+        $default_autodump = 1;
+        $default_color    = 1;
+    }
     my $home = $c->config->{home};
     my $config = $c->config->{'File::RotateLogs'} || {
-        logfile      => Path::Class::file($home, "root", "error_log.%Y%m%d%H")->absolute->stringify,
-        linkname     => Path::Class::file($home, "root", "error_log")->absolute->stringify,
+        logfile      => Path::Class::file($home, "root", "${mode_prefix}.error_log.%Y%m%d%H")->absolute->stringify,
+        linkname     => Path::Class::file($home, "root", "${mode_prefix}.error_log")->absolute->stringify,
         rotationtime => 86400,     #default 1day
         maxage       => 86400 * 3, #3day
-        autodump     => 0,
-        color        => 0,
+        autodump     => $default_autodump,
+        color        => $default_color,
     };
     $config->{maxage} = int eval($config->{maxage});
     $c->log((__PACKAGE__ . '::Backend')->new($config));
