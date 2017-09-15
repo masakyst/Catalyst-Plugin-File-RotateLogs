@@ -9,7 +9,7 @@ our $VERSION = "0.06";
 
 sub setup {
     my $c = shift;
-    my $mode_prefix = $ENV{PLACK_ENV} || 'development';
+    my $mode_prefix = $ENV{PLACK_ENV} // 'development';
     my $default_autodump = 0;
     my $default_color    = 0;
     if ($mode_prefix eq 'development') {
