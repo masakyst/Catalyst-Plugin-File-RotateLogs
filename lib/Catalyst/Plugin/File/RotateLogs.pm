@@ -34,6 +34,7 @@ package Catalyst::Plugin::File::RotateLogs::Backend;
 use Moose;
 use Time::Piece;
 use File::RotateLogs;
+use Data::Dumper;
 use Term::ANSIColor;
 
 BEGIN { extends 'Catalyst::Log' }
